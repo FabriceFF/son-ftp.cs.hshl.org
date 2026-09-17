@@ -155,7 +155,7 @@ class FTP_Connection {
         return size * count;
     }
 
-    // Builds the complete URL, e.g. "ftp://son-1.vm.cs.hshl.org:21/upload/".
+    // Builds the complete URL, e.g. "ftp://son-ftp.cs.hshl.org:21/upload/".
     std::string url(const std::string& path) const {
         return "ftp://" + host + ":" + std::to_string(port) + path;
     }
@@ -584,7 +584,7 @@ int main() {
     // deliberately not stored in this repository - paste it in before running.
     const std::string password = "<password>";
 
-    SFTP_Connection connection("son-1.vm.cs.hshl.org", 22, "sftpuser", password);
+    SFTP_Connection connection("son-ftp.cs.hshl.org", 22, "sftpuser", password);
     SFTP_Directory root("/upload/");
 
     if (!connection.connect()) {

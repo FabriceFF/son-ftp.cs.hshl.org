@@ -99,7 +99,7 @@ class FTP_Connection {
         return size * count;
     }
 
-    // Builds the complete URL, e.g. "ftp://son-1.vm.cs.hshl.org:21/upload/".
+    // Builds the complete URL, e.g. "ftp://son-ftp.cs.hshl.org:21/upload/".
     std::string url(const std::string& path) const {
         return "ftp://" + host + ":" + std::to_string(port) + path;
     }
@@ -626,7 +626,7 @@ int main() {
     // cleaned up again at the end.
     curl_global_init(CURL_GLOBAL_DEFAULT);
 
-    const std::string host = "son-1.vm.cs.hshl.org";
+    const std::string host = "son-ftp.cs.hshl.org";
 
     // Own prefix so that the groups don't get in each other's way.
     const std::string groupPrefix = "gruppe1";

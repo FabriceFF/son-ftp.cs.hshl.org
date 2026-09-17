@@ -97,7 +97,7 @@ Das Passwort ist **nicht** Teil dieses Repositorys. Es wird separat über Moodle
 Alles Übrige ist öffentlich:
 
 ```
-Host:      son-1.vm.cs.hshl.org
+Host:      son-ftp.cs.hshl.org
 Username:  sftpuser
 Port FTP:  21
 Port SFTP: 22
@@ -121,7 +121,7 @@ Verbindung aufbauen und Daten setzen:
 curl_global_init(CURL_GLOBAL_DEFAULT);
 CURL* curl = curl_easy_init();
 
-std::string url  = "ftp://son-1.vm.cs.hshl.org:21/upload/";
+std::string url  = "ftp://son-ftp.cs.hshl.org:21/upload/";
 std::string user = "sftpuser:<password>";  // siehe credentials.local.md
 curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
 curl_easy_setopt(curl, CURLOPT_USERPWD, user.c_str());
@@ -145,7 +145,7 @@ Verzeichnis erstellen (`QUOTE` führt ein Kommando direkt auf dem Server aus, `C
 
 ```cpp
 struct curl_slist* quote = curl_slist_append(nullptr, "MKD /upload/gruppe1_neu");
-curl_easy_setopt(curl, CURLOPT_URL, "ftp://son-1.vm.cs.hshl.org:21/upload/");
+curl_easy_setopt(curl, CURLOPT_URL, "ftp://son-ftp.cs.hshl.org:21/upload/");
 curl_easy_setopt(curl, CURLOPT_USERPWD, user.c_str());
 curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
 curl_easy_setopt(curl, CURLOPT_QUOTE, quote);
@@ -157,7 +157,7 @@ Verzeichnis löschen:
 
 ```cpp
 struct curl_slist* quote = curl_slist_append(nullptr, "RMD /upload/gruppe1_neu");
-curl_easy_setopt(curl, CURLOPT_URL, "ftp://son-1.vm.cs.hshl.org:21/upload/");
+curl_easy_setopt(curl, CURLOPT_URL, "ftp://son-ftp.cs.hshl.org:21/upload/");
 curl_easy_setopt(curl, CURLOPT_USERPWD, user.c_str());
 curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
 curl_easy_setopt(curl, CURLOPT_QUOTE, quote);
@@ -179,7 +179,7 @@ Verbindung herstellen:
 ```cpp
 ssh_session session = ssh_new();
 unsigned int port = 22;
-ssh_options_set(session, SSH_OPTIONS_HOST, "son-1.vm.cs.hshl.org");
+ssh_options_set(session, SSH_OPTIONS_HOST, "son-ftp.cs.hshl.org");
 ssh_options_set(session, SSH_OPTIONS_PORT, &port);
 ssh_options_set(session, SSH_OPTIONS_USER, "sftpuser");
 ssh_connect(session);
@@ -248,11 +248,11 @@ ssh_free(session);
 
 ### Hinweis zur FTP-Erreichbarkeit
 
-SFTP (Port 22) funktioniert von überall. **FTP (Port 21) ist derzeit von der Campus-Firewall blockiert** und benötigt eine eigene Regel für Port 21 *und* den Passiv-Datenportbereich 40000–40100. Solange diese Regel fehlt, lässt sich der FTP-Teil nur aus dem Campus-Netz testen – wenn überhaupt.
+SFTP (Port 22) funktioniert von überall und ist getestet. **FTP ist derzeit nur halb freigeschaltet:** Port 21 kommt am Server an, der Passiv-Datenportbereich 40000–40100 jedoch nicht. Solange das so ist, bleibt der FTP-Teil unbenutzbar.
 
 Das ist kein Konfigurationsversehen, sondern liegt in der Natur des Protokolls, und es lohnt sich für Aufgabe 1: FTP benutzt zwei getrennte TCP-Verbindungen – über Port 21 laufen nur Kommandos, während jedes Verzeichnis-Listing und jede Übertragung eine zweite Verbindung auf einem eigenen Port öffnet. SFTP multiplext alles über die eine SSH-Verbindung auf Port 22, und genau deshalb kommt es unverändert durch die Firewall.
 
-Konsequenz, solange die Regel fehlt: Login, `createDirectory` und `deleteDirectory` würden über FTP funktionieren, weil sie nur den Steuerkanal brauchen – aber `getDirectories` hängt bis zum Timeout.
+Konsequenz genau dieser halben Freigabe: Login, `createDirectory` und `deleteDirectory` funktionieren über FTP, weil sie nur den Steuerkanal brauchen – aber `getDirectories` hängt bis zum Timeout, weil es eine Datenverbindung braucht.
 
 ---
 
@@ -352,7 +352,7 @@ committed by accident.
 Everything else you need is public:
 
 ```
-Host:      son-1.vm.cs.hshl.org
+Host:      son-ftp.cs.hshl.org
 Username:  sftpuser
 Port FTP:  21
 Port SFTP: 22
@@ -377,7 +377,7 @@ Establish the connection and set the data:
 curl_global_init(CURL_GLOBAL_DEFAULT);
 CURL* curl = curl_easy_init();
 
-std::string url  = "ftp://son-1.vm.cs.hshl.org:21/upload/";
+std::string url  = "ftp://son-ftp.cs.hshl.org:21/upload/";
 std::string user = "sftpuser:<password>";  // see credentials.local.md
 curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
 curl_easy_setopt(curl, CURLOPT_USERPWD, user.c_str());
@@ -401,7 +401,7 @@ Create a directory (`QUOTE` executes a command directly on the server, `CURLOPT_
 
 ```cpp
 struct curl_slist* quote = curl_slist_append(nullptr, "MKD /upload/gruppe1_neu");
-curl_easy_setopt(curl, CURLOPT_URL, "ftp://son-1.vm.cs.hshl.org:21/upload/");
+curl_easy_setopt(curl, CURLOPT_URL, "ftp://son-ftp.cs.hshl.org:21/upload/");
 curl_easy_setopt(curl, CURLOPT_USERPWD, user.c_str());
 curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
 curl_easy_setopt(curl, CURLOPT_QUOTE, quote);
@@ -413,7 +413,7 @@ Delete a directory:
 
 ```cpp
 struct curl_slist* quote = curl_slist_append(nullptr, "RMD /upload/gruppe1_neu");
-curl_easy_setopt(curl, CURLOPT_URL, "ftp://son-1.vm.cs.hshl.org:21/upload/");
+curl_easy_setopt(curl, CURLOPT_URL, "ftp://son-ftp.cs.hshl.org:21/upload/");
 curl_easy_setopt(curl, CURLOPT_USERPWD, user.c_str());
 curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
 curl_easy_setopt(curl, CURLOPT_QUOTE, quote);
@@ -435,7 +435,7 @@ Establish the connection:
 ```cpp
 ssh_session session = ssh_new();
 unsigned int port = 22;
-ssh_options_set(session, SSH_OPTIONS_HOST, "son-1.vm.cs.hshl.org");
+ssh_options_set(session, SSH_OPTIONS_HOST, "son-ftp.cs.hshl.org");
 ssh_options_set(session, SSH_OPTIONS_PORT, &port);
 ssh_options_set(session, SSH_OPTIONS_USER, "sftpuser");
 ssh_connect(session);
@@ -504,10 +504,9 @@ ssh_free(session);
 
 ### Note on FTP reachability
 
-SFTP (port 22) works from anywhere. **FTP (port 21) is currently blocked by the campus
-firewall** and needs a separate rule for port 21 *and* the passive data port range
-40000-40100. Until that rule exists, the FTP part can only be tested from inside the campus
-network – if at all.
+SFTP (port 22) works from anywhere and has been tested. **FTP is currently only half open:**
+port 21 reaches the server, but the passive data port range 40000-40100 does not. Until that
+is fixed, the FTP part is unusable.
 
 This is not an accident of configuration but the nature of the protocol, and it is worth
 understanding for task 1 of the assignment: FTP uses two separate TCP connections – port 21
@@ -515,6 +514,6 @@ carries only commands, while every directory listing or transfer opens a second 
 on its own port. SFTP multiplexes everything over the single SSH connection on port 22,
 which is exactly why it passes the firewall unchanged.
 
-Consequence while the rule is missing: login, `createDirectory` and `deleteDirectory` would
+Consequence of exactly this half-open state: login, `createDirectory` and `deleteDirectory`
 work over FTP, because they need only the control channel – but `getDirectories` hangs until
-it times out.
+it times out, because it needs a data connection.
