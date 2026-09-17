@@ -1,0 +1,387 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.1.1 Chrome/132.0.6834.210 Electron/34.3.3 Safari/537.36" version="26.1.1" pages="3">
+  <diagram name="1 - SFTP connect" id="1_-_SFTP_connect">
+    <mxGraphModel dx="1434" dy="836" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="v1" value="SFTP_Connection::connect() - two handshakes stacked on top of each other" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=center;verticalAlign=middle;fontSize=14;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="40" y="20" width="1060" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="v2" value="main()" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;size=44;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;fontStyle=1;verticalAlign=top;" parent="1" vertex="1">
+          <mxGeometry x="40" y="90" width="170" height="700" as="geometry" />
+        </mxCell>
+        <mxCell id="v3" value="SFTP_Connection" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;size=44;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1;verticalAlign=top;" parent="1" vertex="1">
+          <mxGeometry x="270" y="90" width="220" height="700" as="geometry" />
+        </mxCell>
+        <mxCell id="v4" value="libssh" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;size=44;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;verticalAlign=top;" parent="1" vertex="1">
+          <mxGeometry x="590" y="90" width="170" height="700" as="geometry" />
+        </mxCell>
+        <mxCell id="v5" value="Server (son-1)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;size=44;fillColor=#f5f5f5;strokeColor=#999999;fontSize=12;fontStyle=1;verticalAlign=top;" parent="1" vertex="1">
+          <mxGeometry x="860" y="90" width="240" height="700" as="geometry" />
+        </mxCell>
+        <mxCell id="v6" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
+          <mxGeometry x="374" y="200" width="12" height="570" as="geometry" />
+        </mxCell>
+        <mxCell id="v7" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
+          <mxGeometry x="669" y="268" width="12" height="460" as="geometry" />
+        </mxCell>
+        <mxCell id="m8" value="connect()" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;endSize=8;rounded=0;fontSize=11;strokeColor=#000000;labelBackgroundColor=#ffffff;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="125" y="200" as="sourcePoint" />
+            <mxPoint x="380" y="200" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m9" value="disconnect()  - clean up any old session first" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;endSize=8;rounded=0;fontSize=11;align=left;verticalAlign=middle;strokeColor=#000000;labelBackgroundColor=#ffffff;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="380" y="228" as="sourcePoint" />
+            <mxPoint x="380" y="262" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="500" y="228" />
+              <mxPoint x="500" y="262" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="v10" value="Step 1:  build the SSH connection  [ssh_*]" style="shape=umlFrame;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#9673a6;fontSize=11;fontStyle=1;align=left;verticalAlign=top;width=190;height=40;" parent="1" vertex="1">
+          <mxGeometry x="250" y="290" width="870" height="270" as="geometry" />
+        </mxCell>
+        <mxCell id="m11" value="ssh_new()" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;endSize=8;rounded=0;fontSize=11;strokeColor=#000000;labelBackgroundColor=#ffffff;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="380" y="340" as="sourcePoint" />
+            <mxPoint x="675" y="340" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m12" value="ssh_options_set(HOST, PORT, USER, TIMEOUT)" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;endSize=8;rounded=0;fontSize=11;strokeColor=#000000;labelBackgroundColor=#ffffff;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="380" y="368" as="sourcePoint" />
+            <mxPoint x="675" y="368" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m13" value="ssh_connect()" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;endSize=8;rounded=0;fontSize=11;strokeColor=#000000;labelBackgroundColor=#ffffff;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="380" y="406" as="sourcePoint" />
+            <mxPoint x="675" y="406" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m14" value="TCP connect + SSH key exchange" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;endSize=8;rounded=0;fontSize=11;strokeColor=#000000;labelBackgroundColor=#ffffff;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="675" y="438" as="sourcePoint" />
+            <mxPoint x="980" y="438" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m15" value="server host key" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;endSize=10;dashed=1;rounded=0;fontSize=11;strokeColor=#555555;labelBackgroundColor=#ffffff;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="980" y="470" as="sourcePoint" />
+            <mxPoint x="675" y="470" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m16" value="verifyHostKey()   -&amp;gt;  see page 3" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;endSize=8;rounded=0;fontSize=11;align=left;verticalAlign=middle;strokeColor=#000000;labelBackgroundColor=#ffffff;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="380" y="496" as="sourcePoint" />
+            <mxPoint x="380" y="526" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="470" y="496" />
+              <mxPoint x="470" y="526" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m17" value="ssh_userauth_password(session, nullptr, password)" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;endSize=8;rounded=0;fontSize=11;strokeColor=#000000;labelBackgroundColor=#ffffff;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="380" y="542" as="sourcePoint" />
+            <mxPoint x="675" y="542" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m18" value="authenticate user" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;endSize=8;rounded=0;fontSize=11;strokeColor=#000000;labelBackgroundColor=#ffffff;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="675" y="580" as="sourcePoint" />
+            <mxPoint x="980" y="580" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m19" value="SSH_AUTH_SUCCESS" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;endSize=10;dashed=1;rounded=0;fontSize=11;strokeColor=#555555;labelBackgroundColor=#ffffff;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="980" y="612" as="sourcePoint" />
+            <mxPoint x="675" y="612" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="v20" value="Step 2:  open the SFTP channel on top  [sftp_*]" style="shape=umlFrame;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#9673a6;fontSize=11;fontStyle=1;align=left;verticalAlign=top;width=190;height=26;" parent="1" vertex="1">
+          <mxGeometry x="250" y="640" width="870" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="m21" value="sftp_new(session)" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;endSize=8;rounded=0;fontSize=11;strokeColor=#000000;labelBackgroundColor=#ffffff;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="380" y="680" as="sourcePoint" />
+            <mxPoint x="675" y="680" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m22" value="sftp_init(sftp)" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;endSize=8;rounded=0;fontSize=11;strokeColor=#000000;labelBackgroundColor=#ffffff;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="380" y="716" as="sourcePoint" />
+            <mxPoint x="675" y="716" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m23" value="open SFTP subsystem" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;endSize=8;rounded=0;fontSize=11;strokeColor=#000000;labelBackgroundColor=#ffffff;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="675" y="748" as="sourcePoint" />
+            <mxPoint x="980" y="748" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m24" value="return 0      // 0 == OK, NOT true!" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;endSize=10;dashed=1;rounded=0;fontSize=11;strokeColor=#555555;labelBackgroundColor=#ffffff;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="380" y="790" as="sourcePoint" />
+            <mxPoint x="125" y="790" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="v25" value="&lt;b&gt;Why two steps?&lt;/b&gt;&lt;br&gt;SFTP is not &amp;#8222;FTP with encryption&amp;#8220;. It is a file transfer channel that runs &lt;i&gt;inside&lt;/i&gt; an SSH connection. So an SSH session has to be built and authenticated first (step 1); only then can the SFTP channel be opened on top of it (step 2)." style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=12;size=14;" parent="1" vertex="1">
+          <mxGeometry x="40" y="830" width="520" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="v26" value="&lt;b&gt;Every failure path cleans up.&lt;/b&gt;&lt;br&gt;If ssh_new, ssh_connect, verifyHostKey, ssh_userauth_password or sftp_new/sftp_init fails, connect() calls disconnect() and returns -1.&lt;br&gt;&lt;br&gt;disconnect() unwinds in &lt;b&gt;reverse&lt;/b&gt; order:&lt;br&gt;sftp_free &amp;#8594; ssh_disconnect &amp;#8594; ssh_free." style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#f8cecc;strokeColor=#b85450;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=12;size=14;" parent="1" vertex="1">
+          <mxGeometry x="580" y="830" width="520" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="v27" value="&lt;b&gt;Security:&lt;/b&gt; the host key is checked &lt;i&gt;between&lt;/i&gt; ssh_connect() and ssh_userauth_password(). ssh_connect() does not do it for you - sending the password to an unverified server is exactly the man-in-the-middle case." style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=12;size=14;" parent="1" vertex="1">
+          <mxGeometry x="40" y="1000" width="1060" height="70" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="2 - FTP callback" id="2_-_FTP_callback">
+    <mxGraphModel dx="1422" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="v28" value="FTP_Connection::listDirectories() - libcurl calls back INTO our own code" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=center;verticalAlign=middle;fontSize=14;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="20" width="1380" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="v29" value="runFtpDemo()" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;size=44;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="40" y="90" width="190" height="700" as="geometry" />
+        </mxCell>
+        <mxCell id="v30" value="FTP_Connection" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;size=44;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="300" y="90" width="200" height="700" as="geometry" />
+        </mxCell>
+        <mxCell id="v31" value="libcurl" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;size=44;fillColor=#f5f5f5;strokeColor=#999999;fontSize=12;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="600" y="90" width="170" height="700" as="geometry" />
+        </mxCell>
+        <mxCell id="v32" value="writeCallback()" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;size=44;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="860" y="90" width="210" height="700" as="geometry" />
+        </mxCell>
+        <mxCell id="v33" value="Server (son-1)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;size=44;fillColor=#f5f5f5;strokeColor=#999999;fontSize=12;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1180" y="90" width="200" height="700" as="geometry" />
+        </mxCell>
+        <mxCell id="v34" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="394" y="200" width="12" height="540" as="geometry" />
+        </mxCell>
+        <mxCell id="v35" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="679" y="300" width="12" height="380" as="geometry" />
+        </mxCell>
+        <mxCell id="m36" value="listDirectories(&quot;/upload/&quot;)" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;endSize=8;rounded=0;fontSize=11;strokeColor=#000000;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="135" y="200" as="sourcePoint" />
+            <mxPoint x="400" y="200" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m37" value="applyCommonOptions(url)" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;endSize=8;rounded=0;fontSize=11;align=left;verticalAlign=middle;strokeColor=#000000;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="400" y="226" as="sourcePoint" />
+            <mxPoint x="400" y="254" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="480" y="226" />
+              <mxPoint x="480" y="254" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m38" value="curl_easy_reset(curl)" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;endSize=8;rounded=0;fontSize=11;strokeColor=#000000;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="400" y="300" as="sourcePoint" />
+            <mxPoint x="685" y="300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m39" value="curl_easy_setopt(URL / USERPWD / CONNECTTIMEOUT)" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;endSize=8;rounded=0;fontSize=11;strokeColor=#000000;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="400" y="336" as="sourcePoint" />
+            <mxPoint x="685" y="336" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m40" value="curl_easy_setopt(CURLOPT_WRITEFUNCTION, writeCallback)" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;endSize=8;rounded=0;fontSize=11;strokeColor=#000000;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="400" y="380" as="sourcePoint" />
+            <mxPoint x="685" y="380" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m41" value="curl_easy_setopt(CURLOPT_WRITEDATA, &amp;amp;listing)" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;endSize=8;rounded=0;fontSize=11;strokeColor=#000000;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="400" y="416" as="sourcePoint" />
+            <mxPoint x="685" y="416" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="v42" value="&lt;b&gt;Registration only.&lt;/b&gt;&lt;br&gt;Nothing has run yet - libcurl just remembers which function to call later, and what to pass it." style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=12;size=14;" vertex="1" parent="1">
+          <mxGeometry x="760" y="340" width="340" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="m43" value="curl_easy_perform(curl)" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;endSize=8;rounded=0;fontSize=11;strokeColor=#000000;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="400" y="470" as="sourcePoint" />
+            <mxPoint x="685" y="470" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m44" value="LIST /upload/" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;endSize=8;rounded=0;fontSize=11;strokeColor=#000000;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="685" y="502" as="sourcePoint" />
+            <mxPoint x="1280" y="502" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m45" value="directory listing (ls -l format), in chunks" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;endSize=10;dashed=1;rounded=0;fontSize=11;strokeColor=#555555;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1280" y="534" as="sourcePoint" />
+            <mxPoint x="685" y="534" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="v46" value="loop  [once per chunk of data]" style="shape=umlFrame;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#9673a6;fontSize=11;fontStyle=1;align=left;verticalAlign=top;width=190;height=26;" vertex="1" parent="1">
+          <mxGeometry x="560" y="560" width="640" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="m47" value="writeCallback(ptr, size, count, &amp;amp;listing)" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;endSize=8;rounded=0;fontSize=11;strokeColor=#000000;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="685" y="604" as="sourcePoint" />
+            <mxPoint x="965" y="604" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m48" value="size * count        (listing += chunk)" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;endSize=10;dashed=1;rounded=0;fontSize=11;strokeColor=#555555;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="965" y="660" as="sourcePoint" />
+            <mxPoint x="685" y="660" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m49" value="CURLE_OK" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;endSize=10;dashed=1;rounded=0;fontSize=11;strokeColor=#555555;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="685" y="742" as="sourcePoint" />
+            <mxPoint x="400" y="742" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m50" value="parseDirectoryNames(listing)" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;endSize=8;rounded=0;fontSize=11;align=left;verticalAlign=middle;strokeColor=#000000;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="400" y="768" as="sourcePoint" />
+            <mxPoint x="400" y="796" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="480" y="768" />
+              <mxPoint x="480" y="796" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m51" value="std::vector&amp;lt;std::string&amp;gt;   - names only, no objects" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;endSize=10;dashed=1;rounded=0;fontSize=11;strokeColor=#555555;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="400" y="820" as="sourcePoint" />
+            <mxPoint x="135" y="820" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="v52" value="&lt;b&gt;This is a callback - the control flow is inverted.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Inside the loop the arrow points &lt;i&gt;from&lt;/i&gt; the library &lt;i&gt;into&lt;/i&gt; our own code: libcurl calls writeCallback, we never call it ourselves. It all happens during the single curl_easy_perform() call above.&lt;br&gt;&lt;br&gt;That is also why writeCallback has to be &lt;b&gt;static&lt;/b&gt;: libcurl expects a plain C function pointer, and those cannot carry a &amp;#8222;this&amp;#8220;." style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#f8cecc;strokeColor=#b85450;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=12;size=14;" vertex="1" parent="1">
+          <mxGeometry x="40" y="870" width="660" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="v53" value="&lt;b&gt;Why curl_easy_reset() first?&lt;/b&gt;&lt;br&gt;The same CURL* handle is reused for every request. Without the reset, options from the previous call would still be set - e.g. CURLOPT_NOBODY from connect(), which would suppress the listing we want here.&lt;br&gt;&lt;br&gt;&lt;b&gt;Compare with SFTP:&lt;/b&gt; there, sftp_readdir() returns structured attributes. Here the server sends one block of text that has to be parsed line by line." style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=12;size=14;" vertex="1" parent="1">
+          <mxGeometry x="740" y="870" width="680" height="160" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="3 - host key check" id="3_-_host_key_check">
+    <mxGraphModel dx="1422" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="v54" value="verifyHostKey() - what happens for each possible state of the server&#39;s host key" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=center;verticalAlign=middle;fontSize=14;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="20" width="1180" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="v55" value="" style="ellipse;html=1;fillColor=#000000;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="600" y="90" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="v56" value="ssh_session_is_known_server(session)" style="rounded=1;arcSize=20;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="465" y="160" width="300" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="v57" value="which result?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="540" y="250" width="150" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="v58" value="SSH_KNOWN_HOSTS_OK key known and unchanged" style="rounded=1;arcSize=20;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="40" y="400" width="210" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="v59" value="UNKNOWN / NOT_FOUND server never seen before" style="rounded=1;arcSize=20;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="300" y="400" width="240" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="v60" value="CHANGED key differs from the stored one" style="rounded=1;arcSize=20;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="600" y="400" width="240" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="v61" value="OTHER / default other key type, or an error" style="rounded=1;arcSize=20;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="900" y="400" width="230" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="v62" value="acceptNewHostKey ?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="320" y="510" width="200" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="v63" value="show the fingerprint: ssh_get_server_publickey() ssh_get_publickey_hash(SHA256) ssh_get_fingerprint_hash()" style="rounded=1;arcSize=20;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="270" y="650" width="300" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="v64" value="ssh_session_update_known_hosts()" style="rounded=1;arcSize=20;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="270" y="790" width="300" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="v65" value="return true   -  continue" style="rounded=1;arcSize=20;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="60" y="900" width="240" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="v66" value="return false  -  abort connection" style="rounded=1;arcSize=20;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="760" y="900" width="260" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="v67" value="" style="ellipse;shape=endState;html=1;fillColor=#000000;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="165" y="990" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="v68" value="" style="ellipse;shape=endState;html=1;fillColor=#000000;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="875" y="990" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="f69" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;endSize=8;fontSize=11;strokeColor=#000000;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="v55" target="v56">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f70" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;endSize=8;fontSize=11;strokeColor=#000000;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="v56" target="v57">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f71" value="OK" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;endSize=8;fontSize=11;strokeColor=#000000;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="v57" target="v58">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f72" value="UNKNOWN / NOT_FOUND" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;endSize=8;fontSize=11;strokeColor=#000000;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="v57" target="v59">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f73" value="CHANGED" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;endSize=8;fontSize=11;strokeColor=#000000;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="v57" target="v60">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f74" value="OTHER / default" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;endSize=8;fontSize=11;strokeColor=#000000;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="v57" target="v61">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f75" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;endSize=8;fontSize=11;strokeColor=#000000;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="v58" target="v65">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f76" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;endSize=8;fontSize=11;strokeColor=#000000;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="v59" target="v62">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f77" value="yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;endSize=8;fontSize=11;strokeColor=#000000;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="v62" target="v63">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f78" value="no" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;endSize=8;fontSize=11;strokeColor=#000000;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="v62" target="v66">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f79" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;endSize=8;fontSize=11;strokeColor=#000000;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="v63" target="v64">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f80" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;endSize=8;fontSize=11;strokeColor=#000000;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="v64" target="v65">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f81" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;endSize=8;fontSize=11;strokeColor=#000000;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="v60" target="v66">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f82" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;endSize=8;fontSize=11;strokeColor=#000000;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="v61" target="v66">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f83" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;endSize=8;fontSize=11;strokeColor=#000000;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="v65" target="v67">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f84" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;endSize=8;fontSize=11;strokeColor=#000000;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="v66" target="v68">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="v85" value="&lt;b&gt;Trust On First Use (TOFU)&lt;/b&gt;&lt;br&gt;The &amp;#8222;yes&amp;#8220; branch is what ssh itself does the first time you connect to a machine: it shows the fingerprint and stores it.&lt;br&gt;&lt;br&gt;In this exercise acceptNewHostKey is true so the program runs without asking. &lt;b&gt;Real software must show the fingerprint and let a human confirm it&lt;/b&gt; - otherwise the check is worthless." style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=12;size=14;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="400" width="380" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="v86" value="&lt;b&gt;Why CHANGED is an abort, not a question&lt;/b&gt;&lt;br&gt;A key that changed means either the server was reinstalled - or somebody is sitting between you and the server and offering their own key. The program cannot tell the two apart, so it refuses to send the password." style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#f8cecc;strokeColor=#b85450;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=12;size=14;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="620" width="380" height="170" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

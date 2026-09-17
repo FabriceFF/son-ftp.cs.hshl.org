@@ -1,0 +1,32 @@
+# ---------------------------------------------------------------------------
+# Server credentials - handed out separately (e.g. via Moodle), never committed
+# ---------------------------------------------------------------------------
+credentials.local.md
+
+# The 2024 original assignment carries the password inside its document XML,
+# so it cannot be published as-is.
+Aufgabenstellung.docx
+
+# ---------------------------------------------------------------------------
+# Instructor material. MUST NOT be published: the repo is public. The students
+# are meant to work the interfaces out themselves, and the server setup notes
+# are not course material. Do not remove these entries, and never commit them
+# with `git add -f`.
+# ---------------------------------------------------------------------------
+solution/
+swe exercise preparations.txt
+
+# Build output
+cmake-build-*/
+build/
+_deps/
+*.o
+*.obj
+
+# IDE
+.idea/
+.vscode/
+
+# draw.io backups
+*.bkp
+.$*
