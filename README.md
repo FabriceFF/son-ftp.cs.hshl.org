@@ -248,11 +248,11 @@ ssh_free(session);
 
 ### Hinweis zur FTP-Erreichbarkeit
 
-SFTP (Port 22) funktioniert von überall und ist getestet. **FTP ist derzeit nur halb freigeschaltet:** Port 21 kommt am Server an, der Passiv-Datenportbereich 40000–40100 jedoch nicht. Solange das so ist, bleibt der FTP-Teil unbenutzbar.
+SFTP (Port 22) und FTP (Port 21) funktionieren beide von außen und sind getestet.
 
-Das ist kein Konfigurationsversehen, sondern liegt in der Natur des Protokolls, und es lohnt sich für Aufgabe 1: FTP benutzt zwei getrennte TCP-Verbindungen – über Port 21 laufen nur Kommandos, während jedes Verzeichnis-Listing und jede Übertragung eine zweite Verbindung auf einem eigenen Port öffnet. SFTP multiplext alles über die eine SSH-Verbindung auf Port 22, und genau deshalb kommt es unverändert durch die Firewall.
+Bei FTP gibt es allerdings eine Einschränkung: Die Firewall lässt den eigentlich vorgesehenen Passiv-Datenportbereich 40000–40100 nicht durch, deshalb läuft die Datenverbindung als Notlösung über den einzelnen Port 8080. Das heißt **nur ein gleichzeitiger Transfer im ganzen Kurs**. Wenn Ihr Programm beim Auflisten „Could not open data connection" meldet, während eine andere Gruppe gerade listet, hilft schlicht ein zweiter Versuch.
 
-Konsequenz genau dieser halben Freigabe: Login, `createDirectory` und `deleteDirectory` funktionieren über FTP, weil sie nur den Steuerkanal brauchen – aber `getDirectories` hängt bis zum Timeout, weil es eine Datenverbindung braucht.
+Für Aufgabe 1 lohnt es sich zu verstehen, warum ausgerechnet FTP diesen Ärger macht: FTP benutzt zwei getrennte TCP-Verbindungen – über Port 21 laufen nur Kommandos, während jedes Verzeichnis-Listing und jede Übertragung eine zweite Verbindung auf einem eigenen Port öffnet. Deshalb würden Login, `createDirectory` und `deleteDirectory` auch ohne freigegebenen Datenport funktionieren, `getDirectories` dagegen nicht. SFTP multiplext alles über die eine SSH-Verbindung auf Port 22 und kommt genau deshalb unverändert durch jede Firewall.
 
 ---
 
@@ -504,16 +504,16 @@ ssh_free(session);
 
 ### Note on FTP reachability
 
-SFTP (port 22) works from anywhere and has been tested. **FTP is currently only half open:**
-port 21 reaches the server, but the passive data port range 40000-40100 does not. Until that
-is fixed, the FTP part is unusable.
+SFTP (port 22) and FTP (port 21) both work from outside and have been tested.
 
-This is not an accident of configuration but the nature of the protocol, and it is worth
-understanding for task 1 of the assignment: FTP uses two separate TCP connections – port 21
-carries only commands, while every directory listing or transfer opens a second connection
-on its own port. SFTP multiplexes everything over the single SSH connection on port 22,
-which is exactly why it passes the firewall unchanged.
+FTP comes with one restriction, though: the firewall does not let the intended passive data
+port range 40000-40100 through, so as a stopgap the data connection runs over the single port
+8080. That means **only one transfer at a time across the whole course**. If your program
+reports "Could not open data connection" while another group is listing, simply try again.
 
-Consequence of exactly this half-open state: login, `createDirectory` and `deleteDirectory`
-work over FTP, because they need only the control channel – but `getDirectories` hangs until
-it times out, because it needs a data connection.
+It is worth understanding for task 1 why FTP of all things causes this trouble: FTP uses two
+separate TCP connections – port 21 carries only commands, while every directory listing or
+transfer opens a second connection on its own port. That is why login, `createDirectory` and
+`deleteDirectory` would work even without an open data port, while `getDirectories` would
+not. SFTP multiplexes everything over the single SSH connection on port 22, which is exactly
+why it passes any firewall unchanged.
