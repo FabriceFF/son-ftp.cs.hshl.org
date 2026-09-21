@@ -22,9 +22,9 @@ Das Programm funktioniert – aber es ist so entstanden, wie solche Dinge in der
 | `bool makeDir(parentPath, name)` | `bool createDirectory(parent, name)` |
 | `bool removeDir(fullPath)` | `bool deleteDirectory(dir)` |
 
-Keines von beiden ist „falsch": jedes folgt der Bibliothek, die darunter liegt. Weil es aber keinen gemeinsamen Typ gibt, muss der Testlauf zweimal geschrieben werden (`runFtpDemo()` und `runSftpDemo()`), und nicht eine einzige Zeile lässt sich zwischen ihnen teilen. Der Kommentarblock am Ende dieser Datei listet die Konsequenzen auf.
+Keines von beiden ist „falsch": jedes folgt der Bibliothek, die darunter liegt. Weil es aber keinen gemeinsamen Typ gibt, muss der Testlauf zweimal geschrieben werden (`runFtpDemo()` und `runSftpDemo()`), und nicht eine einzige Zeile lässt sich zwischen ihnen teilen. `main()` muss beide Funktionen namentlich aufrufen – die zwei Verbindungsobjekte haben keinen gemeinsamen Typ und lassen sich deshalb nicht einmal in eine gemeinsame Liste legen und in einer Schleife abarbeiten. Der Kommentarblock am Ende dieser Datei listet die Konsequenzen auf.
 
-**Ihre Aufgabe** ist es, diese Dopplung zu beseitigen, indem Sie beide Klassen hinter ein gemeinsames Interface legen. Arbeiten Sie in der zweiten Datei, `src/with_interface.cpp`. Sie enthält bereits beide Klassen sowie eine fertige `main()` – diese `main()` ist die Spezifikation, und Sie dürfen sie nicht ändern. Beide Klassen sollen das Interface `Connection` implementieren (in C++ eine Klasse mit rein-virtuellen Methoden). Hierfür sind die folgenden Methoden vorgesehen:
+**Ihre Aufgabe** ist es, diese Dopplung zu beseitigen, indem Sie beide Klassen hinter ein gemeinsames Interface legen. Arbeiten Sie in der zweiten Datei, `src/with_interface.cpp`. Sie enthält bereits beide Klassen sowie eine fertige `main()` und die Testfunktion `runDemo()` – dieser vorgegebene Teil ist die Spezifikation, und Sie dürfen ihn nicht ändern. Beide Klassen sollen das Interface `Connection` implementieren (in C++ eine Klasse mit rein-virtuellen Methoden). Hierfür sind die folgenden Methoden vorgesehen:
 
 - **connect** – Rückgabewert bool: Aufbau der Verbindung
 - **disconnect** – Rückgabewert bool: Abbau der Verbindung
@@ -34,20 +34,26 @@ Keines von beiden ist „falsch": jedes folgt der Bibliothek, die darunter liegt
 
 Die Übergabe der Verbindungsdaten soll im Konstruktor erfolgen.
 
+Eine dieser Methoden ist in der Vorgabe **nicht** enthalten: `deleteDirectory` fehlt in beiden Verbindungsklassen und ist von Ihnen zu schreiben – an beiden Stellen steht ein `TODO 5`-Block, der beschreibt, was zu tun ist. Für FTP schicken Sie dafür das Kommando `RMD` (Achtung: als Arbeitsverzeichnis muss das *übergeordnete* Verzeichnis gesetzt sein, curl darf nicht in das Verzeichnis wechseln, das gerade gelöscht werden soll), für SFTP genügt `sftp_rmdir`. Die passenden Code-Schnipsel stehen weiter unten. Der übrige Bibliothekscode ist fertig; dort ändern Sie nur die Signaturen.
+
 Wie Sie der Beschreibung entnehmen können, sollen die Verzeichnisse als Objekte zurückgegeben werden. Für FTP-Verzeichnisse sollen Objekte vom Typ `FTP_Directory` und für SFTP-Verzeichnisse Objekte vom Typ `SFTP_Directory` zurückgegeben werden. Beide Objekte sollen das Interface `Directory` implementieren. Das Interface `Directory` stellt die Methode `getPath` (Rückgabe Pfad als String) zur Verfügung, der Pfad soll über den Konstruktor gesetzt werden.
 
 Als Bibliotheken verwenden wir **libcurl** für FTP und **libssh** für SFTP. (Hinweis: Die unter Ubuntu mit libcurl mitgelieferte SFTP-Unterstützung kann keine Verzeichnisse anlegen/löschen, daher hier der direkte Griff zur libssh.)
 
-Diese Abfolge – die vorhandenen Ordner auflisten, ein neues Verzeichnis anlegen, erneut auflisten, das angelegte Verzeichnis löschen, ein letztes Mal auflisten – ist in der vorgegebenen `main()` bereits implementiert. Ihre Aufgabe ist es, beide Verbindungsklassen dazu passend zu machen, sodass `main()` unverändert für SFTP wie für FTP kompiliert und läuft.
+Diese Abfolge – die vorhandenen Ordner auflisten, ein neues Verzeichnis anlegen, erneut auflisten, das angelegte Verzeichnis löschen, ein letztes Mal auflisten – ist in der Vorgabe bereits implementiert, und zwar genau **einmal**: als Funktion `runDemo()`, die nur die beiden Interfaces kennt. `main()` legt eine FTP- und eine SFTP-Verbindung in denselben `std::vector` und lässt `runDemo()` in einer Schleife über beide laufen – ein Durchlauf testet also beide Protokolle.
+
+Genau darin liegt der Gewinn: was in `without_interface.cpp` zwei Funktionen sind, ist hier eine. Ihre Aufgabe ist es, beide Verbindungsklassen dazu passend zu machen, sodass diese Schleife unverändert kompiliert und läuft. Weil beide Protokolle durch dieselbe Schleife laufen, genügt es nicht, nur eines von beiden fertigzustellen.
 
 ### Aufgabenstellung
 
 1. Recherchieren Sie: Was sind FTP und SFTP? Was sind die Unterschiede der Vorgehen? Was sind Vor- bzw. Nachteile der jeweiligen Vorgehen?
 2. Recherchieren Sie zusätzlich die Begriffe, die Sie nicht kennen (z. B. cURL, SSH-Hostkey, Chroot, reine virtuelle Methode).
-3. Überlegen Sie sich, wie Sie sinnvolle Arbeitspakete schnüren. Beispiel: Es macht vielleicht keinen Sinn, zunächst alle Klassen zu bauen und dann an der Verbindung zu scheitern. Denken Sie an „Divide and Conquer"!
-4. Refaktorieren Sie die vorgegebene Software gleichberechtigt im Team: Entwerfen Sie die beiden Interfaces und passen Sie beide Klassen daran an.
-5. Reflektieren Sie die Partnerarbeit: Was hat gut geklappt? Was war weniger gut?
-6. Bewerten Sie das Vorgehen: Halten Sie solche Textaufgaben für die Softwareentwicklung für sinnvoll?
+3. Probieren Sie beide Protokolle zuerst mit einem fertigen Client aus: **WinSCP** (Windows, kostenlos) beherrscht SFTP *und* FTP. Legen Sie eine Sitzung mit den Zugangsdaten von unten an – einmal mit Protokoll „SFTP" auf Port 22, einmal mit „FTP" auf Port 21 – und legen Sie in `/upload` probeweise ein Verzeichnis an und löschen es wieder. So sehen Sie, was Ihr Programm später selbst tun soll, Verbindungsprobleme fallen sofort auf (und nicht erst im eigenen Code), und während der Entwicklung können Sie jederzeit nachsehen, ob Ihre Verzeichnisse wirklich angelegt bzw. gelöscht wurden. (Unter Linux/macOS tun es `sftp` und `ftp` auf der Kommandozeile oder FileZilla.)
+4. Überlegen Sie sich, wie Sie sinnvolle Arbeitspakete schnüren. Beispiel: Es macht vielleicht keinen Sinn, zunächst alle Klassen zu bauen und dann an der Verbindung zu scheitern. Denken Sie an „Divide and Conquer"!
+5. Refaktorieren Sie die vorgegebene Software gleichberechtigt im Team: Entwerfen Sie die beiden Interfaces und passen Sie beide Klassen daran an. Am Ende soll die Testsequenz nur noch einmal im Code stehen und in einer Schleife für beide Protokolle durchlaufen werden.
+6. Implementieren Sie `deleteDirectory` in beiden Verbindungsklassen selbst – diese Methode ist als einzige nicht vorgegeben (FTP: `RMD`, SFTP: `sftp_rmdir`).
+7. Reflektieren Sie die Partnerarbeit: Was hat gut geklappt? Was war weniger gut?
+8. Bewerten Sie das Vorgehen: Halten Sie solche Textaufgaben für die Softwareentwicklung für sinnvoll?
 
 ### Build
 
@@ -71,22 +77,27 @@ cmake -B build Code/handout && cmake --build build --target without_interface
 ### Wichtige Hinweise
 
 - Lesen Sie diese Aufgabenstellung sorgfältig.
-- Wenn Sie Ordner oder Dateien anlegen, stellen Sie diesen einen individuellen Namen voran
-  (z. B. `gruppe3_...`), damit keine Konflikte mit anderen Gruppen entstehen.
+- Tragen Sie Ihren Gruppennamen in die Konstante `groupPrefix` am Anfang der Quelldatei ein
+  (z. B. `gruppe3`). Sie ist absichtlich leer – ohne Eintrag bricht das Programm sofort mit
+  einer Meldung ab. Alle angelegten Ordner beginnen damit, so entstehen keine Konflikte mit
+  anderen Gruppen. Nehmen Sie deshalb **nicht** den Namen aus einem Beispiel, sondern Ihren
+  eigenen.
 - Der Upload-Ordner `/upload` ist als RAM-basiertes Dateisystem (tmpfs, 100 MB) eingerichtet:
   Er kann nicht „voll" laufen, aber sein Inhalt ist nach einem Neustart des Servers gelöscht.
   Wichtige Ergebnisse sollten Sie also lokal speichern.
-- Beide Programme starten mit einer SFTP-Verbindung (Port 22). Für den FTP-Test tauschen Sie
-  die Klassen `SFTP_Connection`/`SFTP_Directory` gegen `FTP_Connection`/`FTP_Directory` und
-  ändern den Port auf 21 – in `without_interface.cpp` rufen Sie `runFtpDemo()` statt
-  `runSftpDemo()` auf.
+- Beide Programme testen **beide** Protokolle in einem Durchlauf, zuerst FTP (Port 21), dann
+  SFTP (Port 22). Der Unterschied liegt darin, *wie*: `without_interface` ruft dafür zwei
+  getrennte Funktionen (`runFtpDemo()`, `runSftpDemo()`) nacheinander auf, `with_interface`
+  läuft mit einer Schleife über einen `std::vector` mit beiden Verbindungen.
+- Scheitert ein Protokoll (z. B. weil der FTP-Datenport blockiert ist), läuft das andere
+  trotzdem; die Schleife bricht nicht ab. `main()` liefert dann den Exit-Code 1.
 
 ### Repository-Aufbau
 
 | Pfad | Was es ist |
 | --- | --- |
 | `Code/handout/src/without_interface.cpp` | Ausgangspunkt: funktioniert, aber alles ist doppelt geschrieben |
-| `Code/handout/src/with_interface.cpp` | Ihre Arbeitsdatei: `main()` ist vorgegeben, die Interfaces fehlen |
+| `Code/handout/src/with_interface.cpp` | Ihre Arbeitsdatei: `main()` und `runDemo()` sind vorgegeben; die Interfaces und `deleteDirectory` fehlen |
 | `Code/handout/diagrams/` | draw.io-Diagramme: Laufzeitverhalten und der jetzige Entwurf ohne Interfaces |
 | `Code/handout/CMakeLists.txt` | Build-Definition für beide Programme |
 
@@ -103,7 +114,7 @@ Port FTP:  21
 Port SFTP: 22
 ```
 
-Tragen Sie das Passwort in die `password`-Konstante der Datei ein, an der Sie gerade arbeiten (`Code/handout/src/*.cpp`). Checken Sie es nicht ein.
+Tragen Sie das Passwort in die Konstante `serverPassword` der Datei ein, an der Sie gerade arbeiten (`Code/handout/src/*.cpp`) – sie steht zusammen mit `groupPrefix` am Anfang der Datei. Checken Sie das Passwort nicht ein.
 
 ### Code-Schnipsel
 
@@ -144,7 +155,7 @@ CURLcode res = curl_easy_perform(curl);
 Verzeichnis erstellen (`QUOTE` führt ein Kommando direkt auf dem Server aus, `CURLOPT_NOBODY` unterdrückt die Datenübertragung):
 
 ```cpp
-struct curl_slist* quote = curl_slist_append(nullptr, "MKD /upload/gruppe1_neu");
+struct curl_slist* quote = curl_slist_append(nullptr, "MKD /upload/<gruppe>_neu");
 curl_easy_setopt(curl, CURLOPT_URL, "ftp://son-ftp.cs.hshl.org:21/upload/");
 curl_easy_setopt(curl, CURLOPT_USERPWD, user.c_str());
 curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
@@ -156,7 +167,7 @@ curl_slist_free_all(quote);
 Verzeichnis löschen:
 
 ```cpp
-struct curl_slist* quote = curl_slist_append(nullptr, "RMD /upload/gruppe1_neu");
+struct curl_slist* quote = curl_slist_append(nullptr, "RMD /upload/<gruppe>_neu");
 curl_easy_setopt(curl, CURLOPT_URL, "ftp://son-ftp.cs.hshl.org:21/upload/");
 curl_easy_setopt(curl, CURLOPT_USERPWD, user.c_str());
 curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
@@ -229,13 +240,13 @@ sftp_closedir(dir);
 Verzeichnis erstellen:
 
 ```cpp
-sftp_mkdir(sftp, "/upload/gruppe1_neu", 0755);
+sftp_mkdir(sftp, "/upload/<gruppe>_neu", 0755);
 ```
 
 Verzeichnis löschen:
 
 ```cpp
-sftp_rmdir(sftp, "/upload/gruppe1_neu");
+sftp_rmdir(sftp, "/upload/<gruppe>_neu");
 ```
 
 Verbindung schließen:
@@ -270,9 +281,9 @@ The program works – but it was written the way such things often grow in reali
 | `bool makeDir(parentPath, name)` | `bool createDirectory(parent, name)` |
 | `bool removeDir(fullPath)` | `bool deleteDirectory(dir)` |
 
-Neither of the two is "wrong": each one follows the library underneath it. But because there is no common type, the test run has to be written twice (`runFtpDemo()` and `runSftpDemo()`), and not a single line can be shared between them. The comment block at the end of that file lists the consequences.
+Neither of the two is "wrong": each one follows the library underneath it. But because there is no common type, the test run has to be written twice (`runFtpDemo()` and `runSftpDemo()`), and not a single line can be shared between them. `main()` has to call both functions by name – the two connection objects have no common type, so they cannot even be put into one list and walked over in a loop. The comment block at the end of that file lists the consequences.
 
-**Your task** is to remove that duplication by putting both classes behind a common interface. Work in the second file, `src/with_interface.cpp`. It already contains both classes as well as a finished `main()` – that `main()` is the specification, and you must not change it. Both classes should implement the interface `Connection` (in C++, a class with pure-virtual methods). The following methods are foreseen for this purpose:
+**Your task** is to remove that duplication by putting both classes behind a common interface. Work in the second file, `src/with_interface.cpp`. It already contains both classes as well as a finished `main()` and the test function `runDemo()` – that given part is the specification, and you must not change it. Both classes should implement the interface `Connection` (in C++, a class with pure-virtual methods). The following methods are foreseen for this purpose:
 
 - **connect** – return value bool: establish the connection
 - **disconnect** – return value bool: tear down the connection
@@ -282,20 +293,26 @@ Neither of the two is "wrong": each one follows the library underneath it. But b
 
 The connection data should be passed in the constructor.
 
+One of these methods is **not** part of the handout: `deleteDirectory` is missing in both connection classes and is for you to write – a `TODO 5` block in each class says what is needed. For FTP you send the command `RMD` (careful: the working directory of that call has to be the *parent* directory, curl must not change into the directory that is about to be deleted), for SFTP `sftp_rmdir` is enough. The matching code snippets are further down. The rest of the library code is finished; there you only change the signatures.
+
 As you can gather from the description, the directories are to be returned as objects. For FTP directories, objects of type `FTP_Directory` and for SFTP directories objects of type `SFTP_Directory` should be returned. Both objects should implement the interface `Directory`. The interface `Directory` provides the method `getPath` (returns the path as a string); the path should be set via the constructor.
 
 We use the libraries **libcurl** for FTP and **libssh** for SFTP. (Note: the SFTP support shipped with libcurl under Ubuntu cannot create/delete directories, hence going directly to libssh here.)
 
-That sequence – list the existing folders, create a new directory, list again, delete the created directory, list once more – is already implemented in the given `main()`. Your job is to make both connection classes fit it, so that `main()` compiles and runs unchanged for SFTP as well as for FTP.
+That sequence – list the existing folders, create a new directory, list again, delete the created directory, list once more – is already implemented for you, and exactly **once**: as the function `runDemo()`, which knows nothing but the two interfaces. `main()` puts one FTP and one SFTP connection into the same `std::vector` and runs `runDemo()` over both of them in a loop, so a single run tests both protocols.
+
+That is where the payoff is: what takes two functions in `without_interface.cpp` is one function here. Your job is to make both connection classes fit it, so that this loop compiles and runs unchanged. And because both protocols are driven by the same loop, finishing only one of them is not enough.
 
 ### Assignment
 
 1. Do some research: What are FTP and SFTP? What are the differences between the approaches? What are the advantages and disadvantages of the respective approaches?
 2. Also look up any terms you do not know (e.g. cURL, SSH host key, chroot, pure virtual method).
-3. Think about how to define sensible work packages. Example: it probably makes no sense to build all the classes first and then fail on the connection. Remember "Divide and Conquer"!
-4. Refactor the supplied software as equal partners in the team: design the two interfaces and adapt both classes to them.
-5. Reflect on the pair work: What worked well? What was less good?
-6. Evaluate the approach: do you consider such text-based exercises sensible for software development?
+3. Try both protocols with a ready-made client first: **WinSCP** (Windows, free of charge) speaks SFTP *and* FTP. Set up a session with the credentials below – once with protocol "SFTP" on port 22, once with "FTP" on port 21 – and create and delete a directory in `/upload` by hand. That shows you what your program is supposed to do later, connection problems show up right away (instead of inside your own code), and during development you can always check whether your directories really were created or deleted. (On Linux/macOS the command line `sftp` and `ftp`, or FileZilla, do the same job.)
+4. Think about how to define sensible work packages. Example: it probably makes no sense to build all the classes first and then fail on the connection. Remember "Divide and Conquer"!
+5. Refactor the supplied software as equal partners in the team: design the two interfaces and adapt both classes to them. In the end the test sequence should appear only once in the code and be run for both protocols in a loop.
+6. Implement `deleteDirectory` in both connection classes yourself – it is the only method that is not given (FTP: `RMD`, SFTP: `sftp_rmdir`).
+7. Reflect on the pair work: What worked well? What was less good?
+8. Evaluate the approach: do you consider such text-based exercises sensible for software development?
 
 ### Build
 
@@ -323,21 +340,26 @@ cmake -B build Code/handout && cmake --build build --target without_interface
 ### Important Notes
 
 - Read this assignment carefully.
-- When you create folders or files, prefix them with an individual name (e.g. `gruppe3_...`)
-  so that no conflicts arise with other groups.
+- Enter your group name in the constant `groupPrefix` at the top of the source file (e.g.
+  `gruppe3`). It is deliberately empty – without it the program stops right away with a
+  message. Every folder the program creates starts with it, so no conflicts arise with other
+  groups. Do **not** take the name from an example, use your own.
 - The upload folder `/upload` is set up as a RAM-based filesystem (tmpfs, 100 MB): it cannot
   run "full", but its content is deleted after a server restart. You should therefore save
   important results locally.
-- Both programs start with an SFTP connection (port 22). For the FTP test, replace the
-  classes `SFTP_Connection`/`SFTP_Directory` with `FTP_Connection`/`FTP_Directory` and change
-  the port to 21 – in `without_interface.cpp` call `runFtpDemo()` instead of `runSftpDemo()`.
+- Both programs test **both** protocols in a single run, first FTP (port 21), then SFTP
+  (port 22). The difference is *how*: `without_interface` calls two separate functions
+  (`runFtpDemo()`, `runSftpDemo()`) one after the other, while `with_interface` loops over a
+  `std::vector` holding both connections.
+- If one protocol fails (e.g. because the FTP data port is blocked), the other one still
+  runs; the loop does not abort. `main()` then returns exit code 1.
 
 ### Repository Layout
 
 | Path | What it is |
 | --- | --- |
 | `Code/handout/src/without_interface.cpp` | Starting point: works, but everything is written twice |
-| `Code/handout/src/with_interface.cpp` | Your working file: `main()` is given, the interfaces are missing |
+| `Code/handout/src/with_interface.cpp` | Your working file: `main()` and `runDemo()` are given; the interfaces and `deleteDirectory` are missing |
 | `Code/handout/diagrams/` | draw.io diagrams: the runtime behaviour and the current design without interfaces |
 | `Code/handout/CMakeLists.txt` | Build definition for both programs |
 
@@ -356,8 +378,9 @@ Port FTP:  21
 Port SFTP: 22
 ```
 
-Paste the password into the `password` constant in the source file you are working on
-(`Code/handout/src/*.cpp`). Do not commit it.
+Paste the password into the `serverPassword` constant in the source file you are working on
+(`Code/handout/src/*.cpp`) – it sits next to `groupPrefix` at the top of the file. Do not
+commit the password.
 
 ### Code Snippets
 
@@ -398,7 +421,7 @@ CURLcode res = curl_easy_perform(curl);
 Create a directory (`QUOTE` executes a command directly on the server, `CURLOPT_NOBODY` suppresses the data transfer):
 
 ```cpp
-struct curl_slist* quote = curl_slist_append(nullptr, "MKD /upload/gruppe1_neu");
+struct curl_slist* quote = curl_slist_append(nullptr, "MKD /upload/<gruppe>_neu");
 curl_easy_setopt(curl, CURLOPT_URL, "ftp://son-ftp.cs.hshl.org:21/upload/");
 curl_easy_setopt(curl, CURLOPT_USERPWD, user.c_str());
 curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
@@ -410,7 +433,7 @@ curl_slist_free_all(quote);
 Delete a directory:
 
 ```cpp
-struct curl_slist* quote = curl_slist_append(nullptr, "RMD /upload/gruppe1_neu");
+struct curl_slist* quote = curl_slist_append(nullptr, "RMD /upload/<gruppe>_neu");
 curl_easy_setopt(curl, CURLOPT_URL, "ftp://son-ftp.cs.hshl.org:21/upload/");
 curl_easy_setopt(curl, CURLOPT_USERPWD, user.c_str());
 curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
@@ -483,13 +506,13 @@ sftp_closedir(dir);
 Create a directory:
 
 ```cpp
-sftp_mkdir(sftp, "/upload/gruppe1_neu", 0755);
+sftp_mkdir(sftp, "/upload/<gruppe>_neu", 0755);
 ```
 
 Delete a directory:
 
 ```cpp
-sftp_rmdir(sftp, "/upload/gruppe1_neu");
+sftp_rmdir(sftp, "/upload/<gruppe>_neu");
 ```
 
 Close the connection:

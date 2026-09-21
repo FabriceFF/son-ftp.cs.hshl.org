@@ -30,7 +30,8 @@ is the obvious choice there.
 
 The consequence is visible at the bottom of this file: runFtpDemo() and
 runSftpDemo() do exactly the same thing, but not a single line can be shared
-between them.
+between them. main() has to call both of them by name - the two connections
+have no common type, so they cannot even be put into one list and looped over.
 
 YOUR TASK: see with_interface.cpp.
 */
@@ -56,7 +57,7 @@ std::string joinPath(const std::string& directory, const std::string& name) {
     return directory + "/" + name;
 }
 
-// Last path component, e.g. "/upload/gruppe1" -> "gruppe1".
+// Last path component, e.g. "/upload/gruppe3" -> "gruppe3".
 std::string baseName(const std::string& path) {
     size_t lastSlash = path.find_last_of('/');
     if (lastSlash == std::string::npos) {
@@ -492,14 +493,27 @@ public:
 //
 //  And yet nothing can be shared between them, because every single line
 //  differs in some detail: the method names, the return types, the parameter
-//  types, and even the check for success.
+//  types, and even the check for success. Even the heading printed at the top
+//  has to be written twice.
+//
+//  main() runs both of them, and has to call each one by name. In
+//  with_interface.cpp this whole block shrinks to ONE function runDemo(),
+//  which main() then applies to both protocols in a single loop.
 // ---------------------------------------------------------------------------
 
 // The password is handed out separately (see README.md) and is
 // deliberately not stored in this repository - paste it in before running.
 const std::string serverPassword = "<password>";
 
+// YOUR group name, e.g. "gruppe3". Every directory this program creates starts
+// with it, so that the groups do not get in each other's way - do not simply
+// take the one from the example, or you will be deleting each other's
+// directories on the shared server.
+const std::string groupPrefix = "";  // <-- enter your group name here
+
 void runFtpDemo(const std::string& host, const std::string& newDirName) {
+    std::cout << "\n=== FTP (port 21) ===\n";
+
     FTP_Connection connection(host, 21, "sftpuser", serverPassword);
     const std::string root = "/upload/";
 
@@ -559,6 +573,8 @@ void runFtpDemo(const std::string& host, const std::string& newDirName) {
 }
 
 void runSftpDemo(const std::string& host, const std::string& newDirName) {
+    std::cout << "\n=== SFTP (port 22) ===\n";
+
     SFTP_Connection connection(host, 22, "sftpuser", serverPassword);
     const SFTP_Directory root("/upload/");
 
@@ -628,13 +644,26 @@ int main() {
 
     const std::string host = "son-ftp.cs.hshl.org";
 
-    // Own prefix so that the groups don't get in each other's way.
-    const std::string groupPrefix = "gruppe1";
+    // groupPrefix and serverPassword are further up in this file - fill them
+    // in there.
+    if (groupPrefix.empty()) {
+        std::cerr << "Please enter your group name in groupPrefix further up in"
+                     " this file (see README.md).\n";
+        curl_global_cleanup();
+        return 1;
+    }
     const std::string newDirName = groupPrefix + "_cpp_test";
 
-    // Change runSftpDemo to runFtpDemo to test the other protocol.
-    // (SFTP uses port 22, FTP uses port 21 - the ports are set inside the
-    // two functions.)
+    // Both protocols are tested, one after the other. Note how this has to be
+    // written: two calls to two different functions, by name.
+    //
+    // It CANNOT be written as a loop over a list of connections, because there
+    // is no type that both connections have in common - see the comment at the
+    // end of this file. with_interface.cpp does exactly that loop, and that is
+    // the difference the exercise is about.
+    // (FTP uses port 21, SFTP port 22 - the ports are set inside the two
+    // functions.)
+    runFtpDemo(host, newDirName);
     runSftpDemo(host, newDirName);
 
     curl_global_cleanup();
@@ -658,6 +687,8 @@ to be changed - and that is the normal case in software development.
    that works for both, because there is no common type. Not even a template
    would help here: the method names themselves differ (open vs connect,
    listDirectories vs getDirectories).
+   For the same reason main() cannot put the two connections into one
+   std::vector and walk over it - it has to call both demo functions by name.
 
 3. The different error conventions are dangerous.
        if (ftp.open())         // correct:   true  == success

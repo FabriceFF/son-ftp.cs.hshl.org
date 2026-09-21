@@ -8,15 +8,27 @@ common - not even the names of their methods.
 Your job is to fix that with two INTERFACES.
 
 WHAT YOU GET
-    - Both classes, exactly as in without_interface.cpp (so you do not have to
-      retype them). All the libcurl / libssh code inside them is finished and
-      correct - you do not need to change how they talk to the server.
-    - main() and listAndPrint() at the bottom of this file. They are ALREADY
-      WRITTEN and you must not change them.
+    - Both classes, almost exactly as in without_interface.cpp (so you do not
+      have to retype them). The libcurl / libssh code inside them is finished
+      and correct - with ONE exception: DELETING a directory is missing in
+      both classes. That method you write yourself, see TODO 5.
+    - main(), runDemo() and listAndPrint() at the bottom of this file. They are
+      ALREADY WRITTEN and you must not change them.
+
+      Look closely at what main() does: it puts ONE FTP connection and ONE
+      SFTP connection into the same std::vector and runs the same runDemo()
+      over both of them. The test sequence - list, create, list, delete,
+      list - therefore exists exactly ONCE in this file, while
+      without_interface.cpp needs it twice. That is the result you are
+      working towards.
+
+      Because both protocols are driven by that one loop, you cannot finish
+      this exercise on one protocol only: the program compiles and runs when
+      BOTH classes implement the interface.
 
 WHAT YOU HAVE TO DO
-    main() is the specification. Look at how it uses the connection, and build
-    the interfaces so that this code compiles and runs:
+    main() and runDemo() are the specification. Look at how they use the
+    connection, and build the interfaces so that this code compiles and runs:
 
         ConnectionInterface& c = ...;
         c.connect();                            // bool, true == success
@@ -37,15 +49,29 @@ WHAT YOU HAVE TO DO
            - listDirectories() returning names must become getDirectories()
              returning DirectoryInterface objects
            - the FTP methods taking path strings must take DirectoryInterface
+    6. Write deleteDirectory() in BOTH classes - it is not there. Everything
+       else is renaming and retyping; this is the one place where you write
+       library code yourself. The two TODO 5 blocks say what is needed, and
+       README.md has the matching libcurl and libssh snippets.
 
-    The library code inside the methods stays as it is. You are only changing
-    the OUTSIDE of the classes - the part the caller sees.
+    Apart from deleteDirectory(), the library code inside the methods stays as
+    it is. You are only changing the OUTSIDE of the classes - the part the
+    caller sees.
+
+BEFORE YOU START
+    Enter your group name in groupPrefix and the password in serverPassword,
+    both at the top of this file, right below the helper functions.
 
 HINT
     This file does not compile at the start: main() uses types that do not
     exist yet. The compiler errors are your to-do list. Work through them from
     top to bottom. The other target, without_interface, keeps building and
     running the whole time, so you can always compare against it.
+
+    main() keeps its objects in std::unique_ptr<ConnectionInterface> and
+    std::unique_ptr<DirectoryInterface>, so they are deleted through a pointer
+    to the interface. Both interfaces therefore NEED a virtual destructor -
+    without one, only the interface part of the object is destroyed.
 */
 
 #include <curl/curl.h>      // FTP
@@ -70,7 +96,7 @@ std::string joinPath(const std::string& directory, const std::string& name) {
     return directory + "/" + name;
 }
 
-// Last path component, e.g. "/upload/gruppe1" -> "gruppe1".
+// Last path component, e.g. "/upload/gruppe3" -> "gruppe3".
 std::string baseName(const std::string& path) {
     size_t lastSlash = path.find_last_of('/');
     if (lastSlash == std::string::npos) {
@@ -83,6 +109,23 @@ std::string baseName(const std::string& path) {
 constexpr long connectTimeoutSeconds = 10;
 
 }  // namespace
+
+// ===========================================================================
+//  FILL IN BEFORE THE FIRST RUN
+//
+//  Both values are deliberately empty/placeholder. The program stops with a
+//  message as long as the group name is missing.
+// ===========================================================================
+
+// YOUR group name, e.g. "gruppe3". Every directory this program creates
+// starts with it, so that the groups do not get in each other's way - do not
+// simply take the one from the example, or you will be deleting each other's
+// directories on the shared server.
+const std::string groupPrefix = "";  // <-- enter your group name here
+
+// The password is handed out separately (see README.md) and is deliberately
+// not stored in this repository - paste it in before running.
+const std::string serverPassword = "<password>";
 
 // ===========================================================================
 //  TODO 1 - The interfaces
@@ -100,7 +143,8 @@ constexpr long connectTimeoutSeconds = 10;
 //      class ConnectionInterface  -> connect(), disconnect(), getDirectories(),
 //                                    createDirectory(), deleteDirectory()
 //
-//  The exact signatures can be read off main() and listAndPrint() below.
+//  The exact signatures can be read off runDemo(), listAndPrint() and main()
+//  below.
 // ===========================================================================
 
 // ... your interfaces go here ...
@@ -130,7 +174,8 @@ constexpr long connectTimeoutSeconds = 10;
 //                            instead of names
 //      makeDir()          -> createDirectory(), taking a DirectoryInterface
 //                            instead of a path string
-//      removeDir()        -> deleteDirectory(), likewise
+//      removeDir()        -> is GONE. deleteDirectory() is yours to write,
+//                            see TODO 5 at the end of the class.
 //
 //  Mark every implemented method with "override" - the compiler then tells
 //  you when a signature does not match the interface.
@@ -313,20 +358,25 @@ public:
         return runQuoteCommand(workingDirectory, "MKD " + newDirPath, "Error creating " + newDirPath);
     }
 
-    // NOTE the parameter: the complete path, as a string.
-    bool removeDir(const std::string& fullPath) {
-        if (!curl) {
-            std::cerr << "No open connection\n";
-            return false;
-        }
-        // The working directory for the call is the parent directory - curl must
-        // not switch into the directory that is about to be deleted.
-        std::string parentPath = fullPath.substr(0, fullPath.find_last_of('/') + 1);
-        if (parentPath.empty()) {
-            parentPath = "/";
-        }
-        return runQuoteCommand(parentPath, "RMD " + fullPath, "Error deleting " + fullPath);
-    }
+    // =======================================================================
+    //  TODO 5 - DELETING IS MISSING HERE. Write it yourself.
+    //
+    //      bool deleteDirectory(const DirectoryInterface& directory) override
+    //
+    //  This is the ONLY method whose body you do not get. What it has to do:
+    //
+    //      - give up with a message if there is no open connection
+    //        (makeDir() right above shows the pattern),
+    //      - run the FTP command "RMD <full path>" via runQuoteCommand(),
+    //      - and set the WORKING DIRECTORY of that call to the PARENT
+    //        directory: curl must not change into the very directory it is
+    //        about to delete. The parent is everything up to and including the
+    //        last '/' of the path (find_last_of / substr), or "/" if nothing
+    //        is left.
+    //
+    //  runQuoteCommand() is private and already finished - just call it.
+    //  The matching libcurl snippet is in README.md.
+    // =======================================================================
 };
 
 // This class belongs further up, next to FTP_Directory, and has to implement
@@ -347,6 +397,8 @@ public:
 //      (careful: here 0 currently means SUCCESS!)
 //      getDirectories() must return unique_ptr<DirectoryInterface> objects
 //      instead of SFTP_Directory values.
+//      deleteDirectory() is missing here as well - see TODO 5 at the end of
+//      the class.
 //
 //  The private part (serverFingerprint, verifyHostKey) stays as it is.
 // ---------------------------------------------------------------------------
@@ -520,17 +572,21 @@ public:
         return true;
     }
 
-    bool deleteDirectory(const SFTP_Directory& directory) {
-        if (!sftp) {
-            std::cerr << "No open connection\n";
-            return false;
-        }
-        if (sftp_rmdir(sftp, directory.getPath().c_str()) != SSH_OK) {
-            std::cerr << "Error deleting " << directory.getPath() << ": " << ssh_get_error(session) << "\n";
-            return false;
-        }
-        return true;
-    }
+    // =======================================================================
+    //  TODO 5 - DELETING IS MISSING HERE TOO. Write it yourself.
+    //
+    //      bool deleteDirectory(const DirectoryInterface& directory) override
+    //
+    //  What it has to do:
+    //
+    //      - give up with a message if there is no open SFTP session,
+    //      - call sftp_rmdir(sftp, <path>) and compare the result with SSH_OK,
+    //      - report a failure with ssh_get_error(session).
+    //
+    //  createDirectory() right above is the template - the SFTP version is
+    //  three lines shorter than the FTP one, because libssh has a ready-made
+    //  function for it. The matching snippet is in README.md.
+    // =======================================================================
 };
 
 // ===========================================================================
@@ -540,8 +596,9 @@ public:
 //  specification for your interfaces: every method it calls must exist in
 //  ConnectionInterface / DirectoryInterface with exactly this signature.
 //
-//  Notice that neither listAndPrint() nor main() mentions FTP or SFTP
-//  anywhere - except in the two marked lines where the object is created.
+//  Notice that neither listAndPrint() nor runDemo() nor main() mentions FTP
+//  or SFTP anywhere - except in the two marked lines where the objects are
+//  created and put into the list.
 // ===========================================================================
 
 // Note the parameter type: this function takes a ConnectionInterface&, so it
@@ -550,8 +607,8 @@ public:
 //
 // Lists the directories, prints them, and hands the list back for further use.
 std::vector<std::unique_ptr<DirectoryInterface>> listAndPrint(ConnectionInterface& connection,
-                                                             const DirectoryInterface& root,
-                                                             const std::string& heading) {
+                                                              const DirectoryInterface& root,
+                                                              const std::string& heading) {
     std::cout << heading << "\n";
     auto directories = connection.getDirectories(root);
     if (directories.empty()) {
@@ -563,41 +620,27 @@ std::vector<std::unique_ptr<DirectoryInterface>> listAndPrint(ConnectionInterfac
     return directories;
 }
 
-int main() {
-    // Flush immediately so that messages to cout and cerr appear in the correct
-    // order - otherwise cout is buffered when the output goes to a file.
-    std::cout << std::unitbuf;
-
-    // libcurl has to be initialised once globally before first use and
-    // cleaned up again at the end.
-    curl_global_init(CURL_GLOBAL_DEFAULT);
-
-    // Own prefix so that the groups don't get in each other's way.
-    const std::string groupPrefix = "gruppe1";
-    const std::string newDirName = groupPrefix + "_cpp_test";
-
-    // These two lines are the ONLY place where the concrete protocol appears.
-    // For the FTP test, replace SFTP_Connection/SFTP_Directory with
-    // FTP_Connection/FTP_Directory and change the port to 21 - everything
-    // below stays exactly as it is, because it only uses the interface.
-    // The password is handed out separately (see README.md) and is
-    // deliberately not stored in this repository - paste it in before running.
-    const std::string password = "<password>";
-
-    SFTP_Connection connection("son-ftp.cs.hshl.org", 22, "sftpuser", password);
-    SFTP_Directory root("/upload/");
+// The complete test run: list -> create -> list -> delete -> list.
+//
+// THIS IS THE POINT OF THE EXERCISE. In without_interface.cpp this sequence
+// has to be written twice (runFtpDemo and runSftpDemo), because there is no
+// type that could describe "a connection". Here it exists exactly ONCE and
+// serves both protocols, because it only ever sees the two interfaces.
+//
+// Returns true if all five steps worked.
+bool runDemo(ConnectionInterface& connection, const DirectoryInterface& root,
+             const std::string& label, const std::string& newDirName) {
+    std::cout << "\n=== " << label << " ===\n";
 
     if (!connection.connect()) {
-        curl_global_cleanup();
-        return 1;
+        return false;
     }
 
     listAndPrint(connection, root, "Existing directories:");
 
     if (!connection.createDirectory(root, newDirName)) {
         connection.disconnect();
-        curl_global_cleanup();
-        return 1;
+        return false;
     }
 
     auto directories = listAndPrint(connection, root, "\nAfter creating:");
@@ -613,19 +656,77 @@ int main() {
     if (!created) {
         std::cerr << "The created directory " << newDirName << " was not found\n";
         connection.disconnect();
-        curl_global_cleanup();
-        return 1;
+        return false;
     }
 
     if (!connection.deleteDirectory(*created)) {
         connection.disconnect();
-        curl_global_cleanup();
-        return 1;
+        return false;
     }
 
     listAndPrint(connection, root, "\nAfter deleting:");
 
     connection.disconnect();
+    return true;
+}
+
+// One entry of the list that main() walks through: a connection, the
+// directory the test run starts in, and a label for the output.
+//
+// Both objects are held as a pointer to the INTERFACE, so one and the same
+// entry can carry the FTP pair or the SFTP pair. unique_ptr is used because
+// the objects have different sizes and could not be stored in the vector by
+// value; it also frees them automatically at the end of main().
+struct Target {
+    std::string label;
+    std::unique_ptr<ConnectionInterface> connection;
+    std::unique_ptr<DirectoryInterface> root;
+};
+
+int main() {
+    // Flush immediately so that messages to cout and cerr appear in the correct
+    // order - otherwise cout is buffered when the output goes to a file.
+    std::cout << std::unitbuf;
+
+    // libcurl has to be initialised once globally before first use and
+    // cleaned up again at the end.
+    curl_global_init(CURL_GLOBAL_DEFAULT);
+
+    const std::string host = "son-ftp.cs.hshl.org";
+    const std::string username = "sftpuser";
+
+    // groupPrefix and serverPassword are at the top of this file - fill them
+    // in there.
+    if (groupPrefix.empty()) {
+        std::cerr << "Please enter your group name in groupPrefix at the top of"
+                     " this file (see README.md).\n";
+        curl_global_cleanup();
+        return 1;
+    }
+    const std::string newDirName = groupPrefix + "_cpp_test";
+
+    // These two entries are the ONLY place in the whole program where the
+    // concrete protocol still appears. The same server, the same user, the
+    // same directory - only the protocol (and with it the port) differs.
+    std::vector<Target> targets;
+    targets.push_back({"FTP (port 21)",
+                       std::make_unique<FTP_Connection>(host, 21, username, serverPassword),
+                       std::make_unique<FTP_Directory>("/upload/")});
+    targets.push_back({"SFTP (port 22)",
+                       std::make_unique<SFTP_Connection>(host, 22, username, serverPassword),
+                       std::make_unique<SFTP_Directory>("/upload/")});
+
+    // And this is what the interfaces are for: ONE loop drives both
+    // protocols. Nothing in here knows which one is currently running, and a
+    // third protocol would only mean a third entry in the list above.
+    bool allRunsOk = true;
+    for (const Target& target : targets) {
+        if (!runDemo(*target.connection, *target.root, target.label, newDirName)) {
+            std::cerr << target.label << ": test run failed\n";
+            allRunsOk = false;
+        }
+    }
+
     curl_global_cleanup();
-    return 0;
+    return allRunsOk ? 0 : 1;
 }
