@@ -1,5 +1,11 @@
 cmake_minimum_required(VERSION 3.16)
 
+# Use the extraction timestamp for files downloaded via FetchContent
+# (silences the CMake Warning (dev) about policy CMP0135).
+if(POLICY CMP0135)
+    cmake_policy(SET CMP0135 NEW)
+endif()
+
 # C is needed in addition to C++ because libcurl, libssh and mbedTLS are C libraries.
 project(ftp_sftp_exercise LANGUAGES C CXX)
 

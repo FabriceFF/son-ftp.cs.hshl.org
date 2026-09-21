@@ -36,7 +36,7 @@ Die Übergabe der Verbindungsdaten soll im Konstruktor erfolgen.
 
 Wie Sie der Beschreibung entnehmen können, sollen die Verzeichnisse als Objekte zurückgegeben werden. Für FTP-Verzeichnisse sollen Objekte vom Typ `FTP_Directory` und für SFTP-Verzeichnisse Objekte vom Typ `SFTP_Directory` zurückgegeben werden. Beide Objekte sollen das Interface `Directory` implementieren. Das Interface `Directory` stellt die Methode `getPath` (Rückgabe Pfad als String) zur Verfügung, der Pfad soll über den Konstruktor gesetzt werden.
 
-Als Bibliotheken verwenden wir **libcurl** für FTP und **libssh** für SFTP. (Hinweis: Die unter Ubuntu mit libcurl mitgelieferte SFTP-Unterstützung kann keine Verzeichnisse anlegen/löschen, daher hier der direkte Griff zur libssh – passend zum Vorbild in Python, das dort auch zwei verschiedene Bibliotheken nutzt: `ftplib` und `paramiko`.)
+Als Bibliotheken verwenden wir **libcurl** für FTP und **libssh** für SFTP. (Hinweis: Die unter Ubuntu mit libcurl mitgelieferte SFTP-Unterstützung kann keine Verzeichnisse anlegen/löschen, daher hier der direkte Griff zur libssh.)
 
 Diese Abfolge – die vorhandenen Ordner auflisten, ein neues Verzeichnis anlegen, erneut auflisten, das angelegte Verzeichnis löschen, ein letztes Mal auflisten – ist in der vorgegebenen `main()` bereits implementiert. Ihre Aufgabe ist es, beide Verbindungsklassen dazu passend zu machen, sodass `main()` unverändert für SFTP wie für FTP kompiliert und läuft.
 
@@ -284,7 +284,7 @@ The connection data should be passed in the constructor.
 
 As you can gather from the description, the directories are to be returned as objects. For FTP directories, objects of type `FTP_Directory` and for SFTP directories objects of type `SFTP_Directory` should be returned. Both objects should implement the interface `Directory`. The interface `Directory` provides the method `getPath` (returns the path as a string); the path should be set via the constructor.
 
-We use the libraries **libcurl** for FTP and **libssh** for SFTP. (Note: the SFTP support shipped with libcurl under Ubuntu cannot create/delete directories, hence going directly to libssh here – consistent with the Python reference implementation, which also uses two different libraries there: `ftplib` and `paramiko`.)
+We use the libraries **libcurl** for FTP and **libssh** for SFTP. (Note: the SFTP support shipped with libcurl under Ubuntu cannot create/delete directories, hence going directly to libssh here.)
 
 That sequence – list the existing folders, create a new directory, list again, delete the created directory, list once more – is already implemented in the given `main()`. Your job is to make both connection classes fit it, so that `main()` compiles and runs unchanged for SFTP as well as for FTP.
 
